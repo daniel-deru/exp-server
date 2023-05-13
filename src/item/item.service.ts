@@ -1,21 +1,52 @@
 import { Injectable } from '@nestjs/common';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { ItemDto } from './dto/item.dto';
 
 @Injectable()
 export class ItemService {
 
-    async createItem(){
-        return { message: "Item Created"}
+    constructor(private prisma: PrismaService){}
+
+    async createItem(item: ItemDto){
+        return await this.prisma.item.create({
+            data: {
+                ...item
+            }
+        })
     }
 
-    async getItems(){
-        return { message: "Item List"}
+    async createManyItems(items: ItemDto[]){
+        return await this.prisma.item.createMany({
+            data: {
+                ...items
+            }
+        })
     }
 
-    async editItem(){
-        return { message: "Item Edited"}
+    async getItemsByActivity(activityId: string){
+        return await this.prisma.item.findMany({
+            where: {
+                activityId
+            }
+        })
     }
 
-    async deleteItem(){
-        return { message: "Item Deleted"}
+    async editItem(itemId: string, item: ItemDto){
+        return await this.prisma.item.update({
+            where: {
+                id: itemId
+            },
+            data: {
+                ...item
+            }
+        })
+    }
+
+    async deleteItem(itemId: string){
+        await this.prisma.item.delete({
+            where: {
+                id: itemId
+            }
+        })
     }
 }

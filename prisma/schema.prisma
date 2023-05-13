@@ -11,58 +11,71 @@ datasource db {
 }
 
 model User {
-  id Int @default(autoincrement()) @id
+  id String @default(uuid()) @id
 
+  email String @unique
   firstName String
   lastName String
-  email String
+  password String
 
   activities Activity[]
+
+    @@map("users")
     
 }
 
 model Activity {
-  id Int @default(autoincrement()) @id
+  id String @default(uuid()) @id
 
   name String
-  venue String
+  createdAt DateTime @default(now())
+  status ActivityStatus @default(Pending)
+
+  venue String?
+  datePlanned DateTime?
+  dateActual DateTime?
   description String?
   location String?
-  date DateTime
   startTime DateTime?
   endTime DateTime?
+  tag String?
 
   items Item[]
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId Int
+  userId String
+
+  @@map("activities")
+
 }
 
 model Item {
-  id Int @default(autoincrement()) @id
+  id String @default(uuid()) @id
 
   price Float
   name String
+  
+  quantity Int @default(1)
+  type ItemType @default(Product)
+
+  tag String?
+  duration Int?
   description String?
-  type ItemType
 
   activity Activity @relation(fields: [activityId], references: [id], onDelete: Cascade)
-  activityId Int
+  activityId String
 
-}
+  @@map("items")
 
-model Product {
-  id Int @default(autoincrement()) @id
-
-  quantity Int
-}
-
-model Service {
-  id Int @default(autoincrement()) @id
-  
-  duration Int
 }
 
 enum ItemType {
   Product
   Service
+}
+
+enum ActivityStatus {
+  Pending
+  Active
+  Finished
+  Cancelled
 }
