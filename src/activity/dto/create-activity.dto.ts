@@ -1,5 +1,5 @@
 import { Item } from "@prisma/client"
-import { IsDate, IsNotEmpty, IsOptional, IsString } from "class-validator"
+import { IsDate, IsDateString, IsNotEmpty, IsOptional, IsString } from "class-validator"
 
 
 export class CreateActivityDto {
@@ -12,7 +12,7 @@ export class CreateActivityDto {
     @IsOptional()
     venue?: string
 
-    @IsDate()
+    @IsDateString()
     @IsOptional()
     datePlanned? : Date
 

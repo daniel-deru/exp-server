@@ -1,8 +1,8 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { ItemService } from './item.service';
 import { JwtGuard } from 'src/user/guards';
 import { GetUser } from 'src/user/decorators';
-import { ItemDto } from './dto/item.dto';
+import { EditItemDto, ItemDto } from './dto';
 
 
 @UseGuards(JwtGuard)
@@ -12,28 +12,34 @@ export class ItemController {
     
     constructor(private itemService: ItemService){}
 
-    @Post('create')
-    async createItem(@Body() item: ItemDto){
-        return this.itemService.createItem(item)
+    @Post('create/:activityId')
+    async createItems(@GetUser('id') userId: string, @Param('activityId') activityId: string, @Body() items: ItemDto[]){
+        return this.itemService.createItems(userId, activityId, items)
     }
 
-    @Post('create/many')
-    async createManyItems(@Body() items: ItemDto[]){
-        return this.itemService.createManyItems(items)
+    @Post('create/')
+    async createItemsNoActivity(@GetUser('id') userId: string, @Body() items: ItemDto[]){
+
+        return this.itemService.createItemsNoActivity(userId, items)
     }
 
-    @Get('all/:id')
-    async getItemsByActivity(@Param('id') activityId: string){
+    @Get('all/:activityId')
+    async getItemsByActivity(@Param('activityId') activityId: string){
         return this.itemService.getItemsByActivity(activityId)
     }
 
-    @Patch('edit/:id')
-    async editItem(@Param('id') itemId: string, @Body() item: ItemDto){
+    @Get('all')
+    async getItemsByUser(@Query('noActivity') query: string, @GetUser('id') userId: string){
+        return this.itemService.getItemsByUser(userId, query)
+    }
+
+    @Patch('edit/:itemId')
+    async editItem(@Param('itemId') itemId: string, @Body() item: EditItemDto){
         return this.itemService.editItem(itemId, item)
     }
 
-    @Delete('delete/:id')
-    async deleteItem(@Param('id') itemId: string){
+    @Delete('delete/:itemId')
+    async deleteItem(@Param('itemId') itemId: string){
         return this.itemService.deleteItem(itemId)
     }
 }

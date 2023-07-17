@@ -1,8 +1,9 @@
-import { Controller, Post, Get, Patch, Delete, Body, UseGuards, Param } from '@nestjs/common';
+import { Controller, Post, Get, Patch, Delete, Body, UseGuards, Param, Query } from '@nestjs/common';
 import { ActivityService } from './activity.service';
 import { CreateActivityDto } from './dto';
 import { JwtGuard } from 'src/user/guards';
 import { GetUser } from 'src/user/decorators';
+// import { Activity } from '@prisma/client';
 
 
 @UseGuards(JwtGuard)
@@ -16,9 +17,19 @@ export class ActivityController {
         return this.activityService.createActivity(userId, activity)
     }
 
+    @Post('start/:id')
+    async startActivity(@GetUser('id') userId: string, @Param('id') activityId: string){
+        return this.activityService.startActivity(userId, activityId)
+    }
+
+    @Post('finish/:id')
+    async finishActivity(@GetUser('id') userId: string, @Param('id') activityId: string){
+        return this.activityService.finishActivity(userId, activityId)
+    }
+
     @Get('all')
-    async getActivities(@GetUser('id') userId: string){
-        return this.activityService.getActivities(userId)
+    async getActivities(@Query('includeItems') query: string, @GetUser('id') userId: string){
+        return this.activityService.getActivities(userId, query)
     }
 
     @Get(':id')

@@ -60,6 +60,27 @@ export class UserService {
 
         return this.signToken(user.id, user.email)
     }
+    // TODO: This is a quick fix. Solve problem correctly before deploying
+    async resetPassword(userData: AuthDto){
+        const user = this.prisma.user.findUnique({
+            where: {
+                email: userData.email
+            }
+        })
+
+        if(!user) throw new ForbiddenException("User Not Found")
+
+        const newPassword = await argon.hash(userData.password)
+
+        return await this.prisma.user.update({
+            where: {
+                email: userData.email
+            },
+            data: {
+                password: newPassword
+            }
+        })
+    }
 
     async signToken(userId: string, email: string){
         const payload = {
@@ -67,7 +88,7 @@ export class UserService {
             email
         }
 
-        const token = await this.jwt.signAsync(payload, {secret: this.config.get("JWT_SECRET"), expiresIn: "15m"})
+        const token = await this.jwt.signAsync(payload, {secret: this.config.get("JWT_SECRET"), expiresIn: "1d"})
 
         return { access_token: token }
     }

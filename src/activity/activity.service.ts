@@ -18,10 +18,53 @@ export class ActivityService {
         return newActivity
     }
 
-    async getActivities(userId: string){
+    async startActivity(userId: string, activityId: string){
+        const activityFound = await this.prisma.activity.findUnique({
+            where: {
+                id: activityId
+            }
+        })
+
+        if(!activityFound || activityFound.userId !== userId) return new ForbiddenException("Access Denied")
+
+        return await this.prisma.activity.update({
+            where: {
+                id: activityId
+            },
+            data: {
+                startTime: new Date(),
+                status: "Active"
+            }
+        })
+    }
+
+    async finishActivity(userId: string, activityId: string){
+        const activityFound = await this.prisma.activity.findUnique({
+            where: {
+                id: activityId
+            }
+        })
+
+        if(!activityFound || activityFound.userId !== userId) return new ForbiddenException("Access Denied")
+
+        return await this.prisma.activity.update({
+            where: {
+                id: activityId
+            },
+            data: {
+                endTime: new Date(),
+                status: "Finished"
+            }
+        })
+    }
+
+    async getActivities(userId: string, query: string){
         return await this.prisma.activity.findMany({
             where: {
                 userId
+            },
+            include: {
+                items: query === 'true' ? true : false
             }
         })
     }

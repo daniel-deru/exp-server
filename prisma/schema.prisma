@@ -19,8 +19,9 @@ model User {
   password String
 
   activities Activity[]
+  items Item[]
 
-    @@map("users")
+  @@map("users")
     
 }
 
@@ -33,7 +34,6 @@ model Activity {
 
   venue String?
   datePlanned DateTime?
-  dateActual DateTime?
   description String?
   location String?
   startTime DateTime?
@@ -41,6 +41,7 @@ model Activity {
   tag String?
 
   items Item[]
+  
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String
 
@@ -51,22 +52,27 @@ model Activity {
 model Item {
   id String @default(uuid()) @id
 
-  price Float
   name String
   
+  planned Boolean @default(true)
+  completed Boolean @default(false)
   quantity Int @default(1)
   type ItemType @default(Product)
 
+  price Float?
   tag String?
-  duration Int?
   description String?
 
-  activity Activity @relation(fields: [activityId], references: [id], onDelete: Cascade)
-  activityId String
+  activity Activity? @relation(fields: [activityId], references: [id], onDelete: Cascade)
+  activityId String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
 
   @@map("items")
 
 }
+
 
 enum ItemType {
   Product
@@ -75,7 +81,6 @@ enum ItemType {
 
 enum ActivityStatus {
   Pending
-  Active
   Finished
-  Cancelled
+  Active
 }
