@@ -7,7 +7,7 @@ generator client {
 
 datasource db {
   provider = "mysql"
-  url      = env("DATABASE_URL")
+  url      = env("DATABASE_URL_TEST")
 }
 
 model User {
@@ -20,6 +20,7 @@ model User {
 
   activities Activity[]
   items Item[]
+  decisions Decision[]
 
   @@map("users")
     
@@ -71,6 +72,38 @@ model Item {
 
   @@map("items")
 
+}
+
+model Decision {
+  id String @default(uuid()) @id
+
+  name String
+  description String?
+
+  options Option[]
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+
+}
+
+model Option {
+  id String @default(uuid()) @id
+
+  name String
+
+  decision Decision @relation(fields: [decisionId], references: [id], onDelete: Cascade)
+  decisionId String
+
+  factors Factor[]
+}
+
+model Factor {
+  id String @default(uuid()) @id
+
+  name String
+
+  option Option @relation(fields: [optionId], references: [id], onDelete: Cascade)
+  optionId String
 }
 
 

@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { ItemService } from './item.service';
-import { JwtGuard } from 'src/user/guards';
-import { GetUser } from 'src/user/decorators';
+import { JwtGuard } from '../user/guards';
+import { GetUser } from '../user/decorators';
 import { EditItemDto, ItemDto } from './dto';
 
 

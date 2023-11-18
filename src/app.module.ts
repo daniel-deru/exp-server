@@ -6,6 +6,8 @@ import { ItemModule } from './item/item.module';
 import { UserModule } from './user/user.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { ConfigModule } from '@nestjs/config';
+import { PrismaMongoModule } from './prisma-mongo/prisma-mongo.module';
+import { DecisionModule } from './decision/decision.module';
 
 @Module({
   imports: [
@@ -13,7 +15,7 @@ import { ConfigModule } from '@nestjs/config';
     ActivityModule, 
     ItemModule, 
     UserModule, 
-    PrismaModule,
+    PrismaModule, PrismaMongoModule, DecisionModule,
   ],
   controllers: [AppController],
   providers: [AppService],

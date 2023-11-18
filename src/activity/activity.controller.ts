@@ -1,8 +1,8 @@
 import { Controller, Post, Get, Patch, Delete, Body, UseGuards, Param, Query } from '@nestjs/common';
 import { ActivityService } from './activity.service';
 import { CreateActivityDto } from './dto';
-import { JwtGuard } from 'src/user/guards';
-import { GetUser } from 'src/user/decorators';
+import { JwtGuard } from "../user/guards"
+import { GetUser } from '../user/decorators';
 // import { Activity } from '@prisma/client';
 
 
